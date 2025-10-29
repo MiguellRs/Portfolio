@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfólio - Técnico em Informática para Internet</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <style>
+    /* 1. VARIÁVEIS DE TEMA (DARK MODE COM ACENTO VERMELHO) */
+    :root{
+      --accent: #E53E3E; /* Vermelho Carmesim */
+      --accent-light: #FF6B6B;
+      --primary-bg: #101014; /* Fundo Escuro Principal */
+      --secondary-bg: #1A1A1E; /* Cor de Fundo dos Cards/Seções */
+      --card-bg: #2C2C31; /* Cor para Cards de Habilidades/Depoimentos */
+      --text: #F1F1F1;
+      --text-soft: #B0B0B0;
+      --shadow: 0 8px 30px rgba(0,0,0,0.4);
+      --shadow-soft: 0 4px 15px rgba(0,0,0,0.2);
+      --radius: 16px;
+      --header-bg: #1A1A1E;
+    }
+
+    /* 2. BASE GLOBAL */
+    *{
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif; /* Usando uma fonte moderna (Inter) */
+      margin: 0;
+      padding: 0;
+      background: var(--primary-bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: var(--accent-light); /* Vermelho mais claro no hover */
+    }
+
+    /* 3. ESTRUTURA E TÍTULOS */
+    header {
+      background: var(--header-bg);
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 35px;
+      margin: 0;
+      padding: 0;
+    }
+
+    header nav ul li a {
+      color: var(--text);
+      font-weight: 600;
+      transition: color 0.3s, transform 0.2s;
+      padding: 5px 0;
+      position: relative;
+    }
+
+    header nav ul li a::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: width 0.3s ease-out;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+    }
+
+    header nav ul li a:hover, header nav ul li a.active {
+      color: var(--accent);
+    }
+    
+    header nav ul li a:hover::after, header nav ul li a.active::after {
+      width: 100%;
+    }
+
+    section {
+      max-width: 1200px;
+      margin: 80px auto;
+      padding: 20px;
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* Animação de entrada (AOS-like) */
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2.5rem;
+      color: var(--text);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    h2::after {
+      content: "";
+      display: block;
+      width: 100px;
+      height: 4px;
+      background: var(--accent);
+      margin: 15px auto 0;
+      border-radius: 4px;
+      box-shadow: 0 0 15px var(--accent); /* Brilho ousado */
+    }
+
+    /* 4. SEÇÃO SOBRE */
+    .sobre-container {
+      background: var(--secondary-bg);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+      border: 1px solid var(--accent); /* Borda ousada */
+    }
+
+    .minha-foto {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 6px solid var(--accent);
+      box-shadow: 0 0 25px rgba(229, 62, 62, 0.6); /* Sombra vermelha */
+      transition: transform 0.3s ease-out;
+    }
+    
+    .minha-foto:hover {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    .sobre-texto {
+      max-width: 600px;
+    }
+
+    .sobre-texto p {
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-size: 1.1rem;
+      color: var(--text-soft);
+    }
+    
+    .sobre-texto strong {
+        color: var(--text);
+        font-weight: 700;
+    }
+
+    /* 5. DEPOIMENTOS (REMODELADO) */
+    .depoimentos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+    }
+
+    .depoimento-card {
+      background: var(--secondary-bg);
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      border-top: 5px solid var(--accent);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+    
+    .depoimento-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow);
+    }
+
+    .depoimento-card blockquote {
+        margin: 0;
+        padding: 0;
+        font-style: italic;
+        line-height: 1.6;
+        color: var(--text-soft);
+        font-size: 1.05rem;
+        position: relative;
+        padding-top: 15px;
+    }
+    
+    .depoimento-card blockquote::before {
+        content: "❝";
+        font-size: 4rem;
+        color: var(--accent);
+        opacity: 0.15;
+        position: absolute;
+        top: -15px;
+        left: -10px;
+        line-height: 1;
+    }
+
+    .autor-info {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .foto-depoimento {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
+      border: 2px solid var(--accent);
+    }
+
+    .autor-info strong {
+      font-style: normal;
+      color: var(--text);
+      font-weight: 700;
+    }
+    
+    .autor-info span {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-soft);
+    }
+
+    /* 6. FORMAÇÕES */
+    .formacoes ul {
+      list-style: none;
+      padding: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .formacoes li {
+      background: var(--secondary-bg);
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-soft);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-left: 5px solid var(--accent);
+      transition: background 0.3s;
+    }
+    
+    .formacoes li:hover {
+        background: #38383e;
+    }
+
+    .formacoes li i {
+      color: var(--accent);
+      font-size: 24px;
+      min-width: 30px;
+      text-align: center;
+    }
+    
+    .formacoes li strong {
+        color: var(--accent);
+    }
+
+    /* 7. HABILIDADES (NOVO GRID OUSADO) */
+    .habilidades-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 20px;
+        padding: 30px;
+        background: var(--secondary-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .habilidade-card {
+      background: var(--card-bg);
+      padding: 25px 15px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(229, 62, 62, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .habilidade-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at center, rgba(229, 62, 62, 0.2) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        transform: scale(0);
+        z-index: 1;
+    }
+
+    .habilidade-card:hover::before {
+        opacity: 1;
+        transform: scale(1);
+    }
+    
+    .habilidade-card:hover { 
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 10px 30px rgba(229, 62, 62, 0.4); 
+      z-index: 2; /* Para garantir que o hover fique por cima */
+    }
+
+    .habilidade-card i {
+      font-size: 48px;
+      color: var(--accent);
+      margin-bottom: 5px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .habilidade-card p {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text);
+      position: relative;
+      z-index: 3;
+    }
+
+
+    /* 8. PORTFÓLIO */
+    .carrossel {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      background: var(--secondary-bg);
+      padding: 40px 60px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .carrossel-container {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .projeto {
+      min-width: 100%;
+      text-align: center;
+      padding: 15px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-projeto {
+      max-width: 150px;
+      height: auto;
+      margin: 8px auto 20px;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease-out;
+    }
+    
+    .projeto:hover .logo-projeto {
+        transform: scale(1.05);
+    }
+    
+    .projeto h3 {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+    }
+    
+    .projeto h3 a {
+        color: var(--text);
+        transition: color 0.3s;
+    }
+    
+    .projeto h3 a:hover {
+        color: var(--accent);
+    }
+
+    .projeto p {
+        color: var(--text-soft);
+        font-size: 1.05rem;
+    }
+
+    .carrossel .btn-proj {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--accent);
+      border: none;
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(229, 62, 62, 0.4);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .carrossel .btn-proj:hover {
+        background: var(--accent-light);
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .carrossel .prev { left: 18px; }
+    .carrossel .next { right: 18px; }
+
+    /* 9. RODAPÉ */
+    footer {
+      background: var(--header-bg);
+      color: var(--text);
+      text-align: center;
+      padding: 30px;
+      margin-top: 80px;
+      border-top: 3px solid var(--accent);
+    }
+
+    .social-icons a {
+      color: var(--text);
+      margin: 0 15px;
+      font-size: 24px;
+      transition: 0.3s, transform 0.2s;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .social-icons a:hover { 
+      color: var(--accent);
+      transform: translateY(-4px) scale(1.1);
+    }
+
+    /* 10. RESPONSIVIDADE */
+    @media (max-width: 900px){
+      h2 { font-size: 2rem; }
+      section { margin: 60px auto; padding: 15px;}
+      header nav ul { gap: 20px; }
+      .sobre-container { padding: 30px; gap: 20px; }
+      .minha-foto { width: 200px; height: 200px; }
+      .carrossel { padding: 30px 45px; }
+      .depoimentos-grid { grid-template-columns: 1fr; }
+      .habilidades-grid { padding: 20px; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+    }
+
+    @media (max-width: 640px){
+      header nav ul { gap: 10px; font-size: 14px; flex-wrap: wrap; }
+      section { margin: 40px 10px; padding: 10px;}
+      .sobre-container { padding: 18px; flex-direction: column; text-align: center; }
+      .minha-foto { width: 150px; height: 150px; }
+      .carrossel { padding: 20px 30px; }
+      .carrossel .btn-proj { width: 32px; height: 32px; font-size: 14px; }
+      .carrossel .prev { left: 8px; }
+      .carrossel .next { right: 8px; }
+      .autor-info { justify-content: center; }
+      .habilidades-grid { padding: 15px; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+      .habilidade-card i { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#depoimentos">Depoimentos</a></li>
+        <li><a href="#formacoes">Formações</a></li>
+        <li><a href="#habilidades">Habilidades</a></li>
+        <li><a href="#portfolio">Portfólio</a></li>
+        <li><a href="#contatos">Contatos</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- SOBRE -->
+  <section id="sobre" class="anim-section">
+    <h2>Sobre Mim</h2>
+    <div class="sobre-container">
+      <img src="imagens/Mídia.jpg" alt="Foto de Miguel Rosa" class="minha-foto">
+      <div class="sobre-texto">
+        <p>Olá! Meu nome é <strong>Miguel Rosa</strong>, sou Técnico em Informática para Internet. Tenho experiência em <strong>desenvolvimento de sites modernos</strong>, <strong>design responsivo</strong> e <strong>soluções digitais criativas</strong> voltadas para diferentes necessidades.</p>
+        <p>Tenho conhecimentos em <strong>HTML, CSS, JavaScript, PHP e MySQL</strong>, além de noções em <strong>UI/UX</strong> para garantir experiências digitais mais agradáveis.</p>
+        <p>Sou apaixonado por tecnologia e inovação. Meu objetivo é transformar ideias em projetos reais e funcionais, sempre buscando aprendizado contínuo e novas oportunidades.</p>
+      </div>
+    </div>
+  </section>
+
+<!-- DEPOIMENTOS (REFEITO) -->
+<section id="depoimentos" class="anim-section">
+  <h2>Feedback de Clientes</h2>
+  <div class="depoimentos-grid">
+    
+    <div class="depoimento-card">
+        <blockquote>"O Miguel é incrível no desenvolvimento de sites! Sempre entrega projetos bem estruturados e criativos. A atenção dele aos detalhes técnicos e de design fez toda a diferença no nosso produto final."</blockquote>
+        <div class="autor-info">
+            <img src="imagens/image.png" alt="Foto do Ciclano" class="foto-depoimento">
+            <div>
+                <strong>Ciclano</strong>
+                <span>Gerente de Projetos, Tech Solutions</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="depoimento-card">
+        <blockquote>"Profissional dedicado e atento aos detalhes. Trabalhar com ele foi uma experiência muito positiva. Seu conhecimento em UI/UX resultou em uma interface que realmente agradou nossos usuários."</blockquote>
+        <div class="autor-info">
+            <img src="imagens/image.png" alt="Foto do Beltrano" class="foto-depoimento">
+            <div>
+                <strong>Beltrano</strong>
+                <span>Fundador, Startup Inovadora</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="depoimento-card">
+        <blockquote>"Recomendo o Miguel para qualquer projeto web. Ele alia conhecimento técnico e criatividade de forma incrível. A performance do site que ele desenvolveu superou nossas expectativas de velocidade e responsividade."</blockquote>
+        <div class="autor-info">
+            <img src="imagens/image.png" alt="Foto do Fulano" class="foto-depoimento">
+            <div>
+                <strong>Fulano</strong>
+                <span>Diretor de Marketing, E-commerce XYZ</span>
+            </div>
+        </div>
+    </div>
+
+  </div>
+</section>
+
+  <!-- FORMAÇÕES -->
+  <section id="formacoes" class="formacoes anim-section">
+    <h2>Formações</h2>
+    <ul>
+      <li><i class="fas fa-graduation-cap"></i> <strong>Técnico em Informática para Internet</strong> – SENAC (conclusão 2025)</li>
+      <li><i class="fas fa-code"></i> <strong>JavaScript: Fundamentos para Desenvolvimento Web Interativo</strong> - IFRS (conclusão 2025)</li>
+    </ul>
+  </section>
+
+  <!-- HABILIDADES (NOVO GRID) -->
+  <section id="habilidades" class="habilidades-section anim-section">
+    <h2>Habilidades</h2>
+
+    <div class="habilidades-grid">
+      <div class="habilidade-card"><i class="fab fa-html5"></i><p>HTML5</p></div>
+      <div class="habilidade-card"><i class="fab fa-css3-alt"></i><p>CSS3</p></div>
+      <div class="habilidade-card"><i class="fab fa-js"></i><p>JavaScript</p></div>
+      <div class="habilidade-card"><i class="fab fa-php"></i><p>PHP</p></div>
+      <div class="habilidade-card"><i class="fas fa-database"></i><p>MySQL</p></div>
+      <div class="habilidade-card"><i class="fas fa-database"></i><p>SQL</p></div>
+      <div class="habilidade-card"><i class="fas fa-server"></i><p>Workbench</p></div>
+      <div class="habilidade-card"><i class="fab fa-git-alt"></i><p>Git / GitHub</p></div>
+      <div class="habilidade-card"><i class="fas fa-code"></i><p>VS Code</p></div>
+      <div class="habilidade-card"><i class="fab fa-bootstrap"></i><p>Bootstrap</p></div>
+      <div class="habilidade-card"><i class="fas fa-code-branch"></i><p>jQuery</p></div>
+      <div class="habilidade-card"><i class="fas fa-pencil-ruler"></i><p>Figma (UI/UX)</p></div>
+    </div>
+  </section>
+
+  <!-- PORTFÓLIO -->
+  <section id="portfolio" class="anim-section">
+    <h2>Projetos de Destaque</h2>
+    <div class="carrossel">
+      <button class="btn-proj prev" aria-label="Anterior projeto"><i class="fas fa-chevron-left"></i></button>
+
+      <div class="carrossel-container">
+        <div class="projeto">
+          <img src="imagens/seedling.svg" alt="Logo do Projeto 1" class="logo-projeto">
+          <h3><a href="https://raizesconectadas.glide.page/dl/7a4e80" target="_blank">Raízes Conectadas</a></h3>
+          <p>Projeto voltado para comunidades indígenas e tecnologia, promovendo inclusão digital e cultural.</p>
+        </div>
+        <div class="projeto">
+          <img src="imagens/Wordmark_Logo_with_Casual_Sans-Serif_Font-removebg-preview.png" alt="Logo do Projeto 2" class="logo-projeto">
+          <h3><a href="https://gustavo11082007.github.io/Barbearia/" target="_blank">Keke du Corte</a></h3>
+          <p>Site moderno e responsivo para barbearia local, com agendamento e galeria de trabalhos.</p>
+        </div>
+        <div class="projeto">
+          <img src="imagens/logo.jpeg" alt="Logo do Projeto 3" class="logo-projeto">
+          <h3><a href="https://gustavo11082007.github.io/Pizza-Nostra/#home " target="_blank">Pizzanostra</a></h3>
+          <p>Landing page apetitosa para pizzaria, com cardápio online e chamada para pedidos.</p>
+        </div>
+        <div class="projeto">
+          <img src="imagens/logo-removebg-preview.png" alt="Logo do Projeto 4" class="logo-projeto">
+          <h3><a href="https://gustavo11082007.github.io/Loja-Tecnologia/" target="_blank">Loja Tech</a></h3>
+          <p>E-commerce simulado voltado para tecnologia e inovação, demonstrando estrutura de vendas online.</p>
+        </div>
+        <div class="projeto">
+          <img src="imagens/image-removebg-preview.png" alt="Logo do Projeto 5" class="logo-projeto">
+          <h3><a href="https://heartbloom-haven.lovable.app/" target="_blank">Acolhimento</a></h3>
+          <p>Site focado em Acolhimento Digital e bem-estar, com design suave e foco na experiência do usuário.</p>
+        </div>
+      </div>
+
+      <button class="btn-proj next" aria-label="Próximo projeto"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </section>
+
+  <!-- RODAPÉ -->
+  <footer id="contatos">
+    <p>&copy; 2025 - Desenvolvido por Miguel Rosa. Todos os direitos reservados.</p>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-whatsapp"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="https://github.com/MiguellRs"><i class="fab fa-github"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    // ---------- Animação AOS (Intersection Observer) ----------
+    function setupAOS() {
+      const sections = document.querySelectorAll('.anim-section');
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      });
+
+      sections.forEach(section => {
+        observer.observe(section);
+      });
+    }
+    
+    // ---------- Carrossel Projetos (simples, ciclo circular) ----------
+    function setupCarrosselProjetos() {
+      const container = document.querySelector('.carrossel-container');
+      const carrossel = document.querySelector('#portfolio .carrossel');
+      const projetos = document.querySelectorAll('.projeto');
+      const prev = document.querySelector('.carrossel .prev');
+      const next = document.querySelector('.carrossel .next');
+      let index = 0;
+
+      if (!container || projetos.length === 0) return;
+
+      function mostrarProjeto(i){
+        index = (i + projetos.length) % projetos.length;
+        // Calcula a largura de um projeto (100% do container pai, que é a div.carrossel)
+        container.style.transform = `translateX(-${index * 100}%)`;
+      }
+
+      prev.addEventListener('click', () => mostrarProjeto(index - 1));
+      next.addEventListener('click', () => mostrarProjeto(index + 1));
+
+      document.addEventListener('keydown', (e) => {
+        if (!carrossel.contains(document.activeElement)) return; // Apenas se o carrossel estiver em foco ou dentro
+        if (e.key === 'ArrowLeft') mostrarProjeto(index - 1);
+        if (e.key === 'ArrowRight') mostrarProjeto(index + 1);
+      });
+    }
+
+    // Inicialização
+    window.onload = function() {
+        setupAOS();
+        setupCarrosselProjetos();
+        // Não é mais necessário o setupCarrosselHabilidades, pois ele foi substituído pelo grid.
+    }
+  </script>
+
+</body>
+</html>
